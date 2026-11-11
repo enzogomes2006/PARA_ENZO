@@ -1,0 +1,26 @@
+PROJETO: EstacionamentoEclipse
+
+COMO IMPORTAR NO ECLIPSE
+1. Baixe o repositorio como ZIP pelo botao Code > Download ZIP do GitHub.
+2. Extraia o arquivo.
+3. Abra o Eclipse.
+4. File > Import... > General > Existing Projects into Workspace > Next.
+5. Em Select root directory, escolha a pasta descompactada do repositorio.
+6. Selecione o projeto e clique em Finish.
+7. Em src > br.com.localiza.estacionamento, abra SistemaEstacionamento.java.
+8. Clique com o botao direito no arquivo > Run As > Java Application.
+
+REQUISITO: Eclipse com JDK instalado (Java 8 ou mais recente).
+
+ARQUIVOS JAVA
+- Veiculo.java
+- Carro.java
+- Moto.java
+- Teclado.java
+- SistemaEstacionamento.java
+
+Observacoes:
+- O estacionamento tem 10 vagas (array).
+- O numero estatico conta os veiculos criados desde o inicio da execucao.
+- A consulta usa exibirInformacoes() e polimorfismo.
+- Sem banco de dados: os registros sao perdidos quando fechar o programa.

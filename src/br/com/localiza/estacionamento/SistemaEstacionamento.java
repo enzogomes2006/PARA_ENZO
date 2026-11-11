@@ -6,7 +6,6 @@ public class SistemaEstacionamento {
 
     public static void main(String[] args) {
         int opcao;
-
         do {
             System.out.println("\n--- ESTACIONAMENTO ---");
             System.out.println("1 - Cadastrar");
@@ -15,7 +14,6 @@ public class SistemaEstacionamento {
             System.out.println("4 - Consultar");
             System.out.println("5 - Exibir total");
             System.out.println("0 - Sair");
-
             opcao = Teclado.lerInteiro("Opcao: ");
 
             switch (opcao) {
@@ -43,28 +41,35 @@ public class SistemaEstacionamento {
         } while (opcao != 0);
     }
 
-    // CADASTRAR
     public static void cadastrarVeiculo() {
-        int tipo = Teclado.lerInteiro("1-Carro 2-Moto: ");
+        int posicaoLivre = -1;
+        for (int i = 0; i < veiculos.length; i++) {
+            if (veiculos[i] == null) {
+                posicaoLivre = i;
+                break;
+            }
+        }
+        if (posicaoLivre == -1) {
+            System.out.println("Estacionamento lotado!");
+            return;
+        }
 
+        int tipo = Teclado.lerInteiro("1-Carro 2-Moto: ");
         if (tipo != 1 && tipo != 2) {
             System.out.println("Tipo invalido!");
             return;
         }
 
         String placa = Teclado.lerString("Placa: ");
-
         if (buscarVeiculoPorPlaca(placa) != null) {
             System.out.println("Placa ja cadastrada!");
             return;
         }
-
         String marca = Teclado.lerString("Marca: ");
         String modelo = Teclado.lerString("Modelo: ");
         int ano = Teclado.lerInteiro("Ano: ");
 
         Veiculo novo;
-
         if (tipo == 1) {
             int portas = Teclado.lerInteiro("Portas: ");
             novo = new Carro(placa, marca, modelo, ano, portas);
@@ -73,39 +78,36 @@ public class SistemaEstacionamento {
             novo = new Moto(placa, marca, modelo, ano, cilindradas);
         }
 
-        for (int i = 0; i < veiculos.length; i++) {
-            if (veiculos[i] == null) {
-                veiculos[i] = novo;
-                System.out.println("Cadastrado!");
-                return;
-            }
-        }
-
-        System.out.println("Estacionamento lotado!");
-        Veiculo.numeroVeiculos--;
+        veiculos[posicaoLivre] = novo;
+        System.out.println("Cadastrado!");
     }
 
-    // BUSCAR PELA PLACA
     public static Veiculo buscarVeiculoPorPlaca(String placa) {
         for (int i = 0; i < veiculos.length; i++) {
             if (veiculos[i] != null &&
-                veiculos[i].getPlaca().equalsIgnoreCase(placa)) {
+                    veiculos[i].getPlaca().equalsIgnoreCase(placa)) {
                 return veiculos[i];
             }
         }
         return null;
     }
 
-    // ALTERAR
     public static void alterarVeiculo() {
-        String placa = Teclado.lerString("Placa: ");
+        String placa = Teclado.lerString("Placa do veiculo: ");
         Veiculo v = buscarVeiculoPorPlaca(placa);
-
         if (v == null) {
             System.out.println("Nao encontrado!");
             return;
         }
 
+        String novaPlaca = Teclado.lerString("Nova placa: ");
+        Veiculo outro = buscarVeiculoPorPlaca(novaPlaca);
+        if (outro != null && outro != v) {
+            System.out.println("Placa ja cadastrada!");
+            return;
+        }
+
+        v.setPlaca(novaPlaca);
         v.setMarca(Teclado.lerString("Nova marca: "));
         v.setModelo(Teclado.lerString("Novo modelo: "));
         v.setAnoFabricacao(Teclado.lerInteiro("Novo ano: "));
@@ -113,47 +115,49 @@ public class SistemaEstacionamento {
         if (v instanceof Carro) {
             int portas = Teclado.lerInteiro("Novas portas: ");
             ((Carro) v).setQuantidadePortas(portas);
-        }
-
-        if (v instanceof Moto) {
+        } else if (v instanceof Moto) {
             int cilindradas = Teclado.lerInteiro("Novas cilindradas: ");
             ((Moto) v).setCilindradas(cilindradas);
         }
-
         System.out.println("Alterado!");
     }
 
-    // EXCLUIR
     public static void excluirVeiculo() {
         String placa = Teclado.lerString("Placa: ");
-
         for (int i = 0; i < veiculos.length; i++) {
             if (veiculos[i] != null &&
-                veiculos[i].getPlaca().equalsIgnoreCase(placa)) {
-
+                    veiculos[i].getPlaca().equalsIgnoreCase(placa)) {
                 veiculos[i] = null;
-                Veiculo.numeroVeiculos--;
-
                 System.out.println("Excluido!");
                 return;
             }
         }
-
         System.out.println("Nao encontrado!");
     }
 
-    // CONSULTAR
     public static void consultarVeiculos() {
+        boolean encontrou = false;
         for (int i = 0; i < veiculos.length; i++) {
             if (veiculos[i] != null) {
-                System.out.println(veiculos[i]);
+                System.out.println("------------------------");
+                veiculos[i].exibirInformacoes();
+                encontrou = true;
             }
+        }
+        if (!encontrou) {
+            System.out.println("Nenhum veiculo cadastrado!");
         }
     }
 
-    // TOTAL
     public static void exibirTotalVeiculos() {
-        System.out.println("Total: " +
-                           Veiculo.getNumeroVeiculos());
+        System.out.println("Total de veiculos criados: " +
+                Veiculo.getNumeroVeiculos());
+        int cadastrados = 0;
+        for (int i = 0; i < veiculos.length; i++) {
+            if (veiculos[i] != null) {
+                cadastrados++;
+            }
+        }
+        System.out.println("Veiculos cadastrados atualmente: " + cadastrados);
     }
 }
